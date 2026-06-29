@@ -1,4 +1,6 @@
-import java.util.Arrays;
+
+import java.util.ArrayList;
+
 
 
 /**
@@ -11,89 +13,155 @@ import java.util.Arrays;
  * @author Gabriela Ortega
  * @version 1.0
  */
-class Pelicula{
-    public String titulo, autor;
-    public int anio;
+class Pelicula {
+    private String titulo;
+    private String autor;
+    private int anioEdicion;
+    private double precioAlquiler;
 
-    public Pelicula(String titulo, String autor, int anio) {
+    public Pelicula(String titulo, String autor, int anioEdicion, double precioAlquiler) {
         this.titulo = titulo;
         this.autor = autor;
-        this.anio = anio;
+        this.anioEdicion = anioEdicion;
+        this.precioAlquiler = precioAlquiler;
+    }
+
+    public String getTitulo() { 
+        return titulo; 
+    }
+    public String getAutor() { 
+        return autor; 
+    }
+    public int getAnioEdicion() { 
+        return anioEdicion; 
+    }
+    public double getPrecioAlquiler() { 
+        return precioAlquiler; 
+    }
+    
+
+    public String mostrarInfo() {
+        return "Titulo   : " + titulo + "\n" +
+               "Autor    : " + autor + "\n" +
+               "Anio     : " + anioEdicion + "\n" +
+               "Precio   : $" + precioAlquiler;
     }
 
     @Override
     public String toString() {
-        return "Pelicula{" + "titulo=" + titulo + ", autor=" + autor + ", anio=" + anio + '}';
+        return "Pelicula{titulo=" + titulo + ", autor=" + autor +
+               ", anio=" + anioEdicion + ", precio=" + precioAlquiler + "}";
     }
-    
 }
-class Soporte{
-    public Pelicula pelicula;
-    public int cantidad;
-    public double precio, costoAlquiler;
 
-    public Soporte(Pelicula pelicula, int cantidad, double precio) {
-        this.pelicula = pelicula;
-        this.cantidad = cantidad;
-        this.precio = precio;
+class VHS extends Pelicula {
+    private String tipoCinta;
+
+    public VHS(String titulo, String autor, int anioEdicion, double precioAlquiler, String tipoCinta) {
+        super(titulo, autor, anioEdicion, precioAlquiler);
+        this.tipoCinta = tipoCinta;
     }
-    public double calcularCostoAlquiler(){
-        this.costoAlquiler = this.cantidad * this.precio;
-        return this.costoAlquiler;
-    }
+
+    public String getTipoCinta() { return tipoCinta; }
+
     @Override
-    public String toString() {
-        return "Soporte{" + "pelicula=" + pelicula + ", cantidad=" + cantidad + ", precio=" + precio + ", costoAlquiler=" + costoAlquiler + '}';
-    }
-    
-}
-class Dvd extends Soporte{
-    public double porcentajeRecargo;
-    public String[] idiomas;
-
-    public Dvd(double porcentajeRecargo, String[] idiomas, Pelicula pelicula, int cantidad, double precio) {
-        super(pelicula, cantidad, precio);
-        this.porcentajeRecargo = porcentajeRecargo;
-        this.idiomas = idiomas;
-    }
-    public double calcularCostoAlquiler(){
-        this.costoAlquiler = super.calcularCostoAlquiler() + (this.costoAlquiler * this.porcentajeRecargo / 100);
-        return this.costoAlquiler; // ✅ retorna el valor ya calculado
+    public String mostrarInfo() {
+        return super.mostrarInfo() + "\n" +
+               "Tipo     : VHS\n" +
+               "Cinta    : " + tipoCinta;
     }
 
     @Override
     public String toString() {
-        return "Dvd{" + "porcentajeRecargo=" + porcentajeRecargo + ", idiomas=" + Arrays.toString(idiomas)+ '}' + super.toString();
+        return "VHS{titulo=" + getTitulo() + ", tipoCinta=" + tipoCinta +
+               ", precio=" + getPrecioAlquiler() + "}";
     }
-    
 }
-class Vhs extends Soporte{
-    public String idioma;
 
-    public Vhs(String idioma, Pelicula pelicula, int cantidad, double precio) {
-        super(pelicula, cantidad, precio);
-        this.idioma = idioma;
+class DVD extends Pelicula {
+    private double capacidadGB;
+    private ArrayList<String> idiomas;
+
+    public DVD(String titulo, String autor, int anioEdicion, double precioAlquiler, double capacidadGB) {
+        super(titulo, autor, anioEdicion, precioAlquiler * 1.10);
+        this.capacidadGB = capacidadGB;
+        this.idiomas = new ArrayList<>();
+    }
+
+    public double getCapacidadGB() { return capacidadGB; }
+    public ArrayList<String> getIdiomas() { return idiomas; }
+    public void agregarIdioma(String idioma) { idiomas.add(idioma); }
+
+    @Override
+    public String mostrarInfo() {
+        return super.mostrarInfo() + "\n" +
+               "Tipo     : DVD\n" +
+               "Capacidad: " + capacidadGB + " GB\n" +
+               "Idiomas  : " + idiomas;
     }
 
     @Override
     public String toString() {
-        return "Vhs{" + "idioma=" + idioma + '}'  + super.toString();
+        return "DVD{titulo=" + getTitulo() + ", capacidad=" + capacidadGB +
+               ", idiomas=" + idiomas + ", precio=" + getPrecioAlquiler() + "}";
     }
-    
 }
+
 public class Problema_2_EjecutorVideoClub {
     public static void main(String[] args) {
-        String idiomas[] = {"ES" , "ENG"};
-        Pelicula peli = new Pelicula("El mundial" , "Mattew " , 2020);
-        Dvd dvd1 = new Dvd(10, idiomas, peli, 2, 10);
-        dvd1.calcularCostoAlquiler();
-        System.out.println(dvd1);
-        Vhs vhs1 = new Vhs(idiomas[0], peli, 2, 10);
-        vhs1.calcularCostoAlquiler();
+
+        VHS vhs1 = new VHS("El Padrino", "Francis Ford Coppola", 1972, 2.50, "Betamax");
+        VHS vhs2 = new VHS("Titanic", "James Cameron", 1997, 2.00, "VHS-C");
+
+        DVD dvd1 = new DVD("Avengers Endgame", "Anthony Russo", 2019, 3.0, 8.5);
+        dvd1.agregarIdioma("Espanol");
+        dvd1.agregarIdioma("Ingles");
+        dvd1.agregarIdioma("Frances");
+
+        DVD dvd2 = new DVD("Inception", "Christopher Nolan", 2010, 2.80, 4.7);
+        dvd2.agregarIdioma("Ingles");
+        dvd2.agregarIdioma("Espanol");
+
+        System.out.println(vhs1.mostrarInfo());
+        System.out.println(vhs2.mostrarInfo());
+        System.out.println(dvd1.mostrarInfo());
+        System.out.println(dvd2.mostrarInfo());
+
         System.out.println(vhs1);
+        System.out.println(vhs2);
+        System.out.println(dvd1);
+        System.out.println(dvd2);
     }
 }
 /**
- * Dvd{porcentajeRecargo=10.0, idiomas=[ES, ENG]}Soporte{pelicula=Pelicula{titulo=El mundial, autor=Mattew , anio=2020}, cantidad=2, precio=10.0, costoAlquiler=22.0}
- * Vhs{idioma=ES}Soporte{pelicula=Pelicula{titulo=El mundial, autor=Mattew , anio=2020}, cantidad=2, precio=10.0, costoAlquiler=20.0}
+ * Titulo   : El Padrino
+Autor    : Francis Ford Coppola
+Anio     : 1972
+Precio   : $2.5
+Tipo     : VHS
+Cinta    : Betamax
+Titulo   : Titanic
+Autor    : James Cameron
+Anio     : 1997
+Precio   : $2.0
+Tipo     : VHS
+Cinta    : VHS-C
+Titulo   : Avengers Endgame
+Autor    : Anthony Russo
+Anio     : 2019
+Precio   : $3.3000000000000003
+Tipo     : DVD
+Capacidad: 8.5 GB
+Idiomas  : [Espanol, Ingles, Frances]
+Titulo   : Inception
+Autor    : Christopher Nolan
+Anio     : 2010
+Precio   : $3.08
+Tipo     : DVD
+Capacidad: 4.7 GB
+Idiomas  : [Ingles, Espanol]
+VHS{titulo=El Padrino, tipoCinta=Betamax, precio=0.0}
+VHS{titulo=Titanic, tipoCinta=VHS-C, precio=0.0}
+DVD{titulo=Avengers Endgame, capacidad=8.5, idiomas=[Espanol, Ingles, Frances], precio=0.0}
+DVD{titulo=Inception, capacidad=4.7, idiomas=[Ingles, Espanol], precio=0.0}
  */
